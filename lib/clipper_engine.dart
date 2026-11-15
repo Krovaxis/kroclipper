@@ -4,7 +4,7 @@ import 'package:ffmpeg_kit_flutter_new/ffmpeg_kit.dart';
 import 'package:youtube_explode_dart/youtube_explode_dart.dart';
 
 class ClipperEngine {
-  static Future> resolveSource(String input) async {
+  static Future resolveSource(String input) async {
     if (input.startsWith('http://') || input.startsWith('https://')) {
       var yt = YoutubeExplode();
       try {
@@ -41,11 +41,11 @@ class ClipperEngine {
     httpClient.close();
   }
 
-  static Future<String> _writeClipScript(List> clips) async {
+  static Future<String> _writeClipScript(List clips) async {
     return "";
   }
 
-  static Future<List<String>> generateClips({
+  static Future<List> generateClips({
     required String sourceInput,
     required Function(String) onProgress,
   }) async {
