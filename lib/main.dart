@@ -112,35 +112,26 @@ class _ClipperHomeScreenState extends State<ClipperHomeScreen> {
     });
 
     try {
-      final sourceData = await ClipperEngine.resolveSource(
-        url: _urlController.text,
-        localFilePath: _pickedLocalFile,
-        zeroDownloadMode: _zeroDownloadMode,
-        onStatus: (msg) => setState(() => _statusText = msg),
-      );
+  final sourceInput = _pickedLocalFile ?? _urlController.text;
+  
+  final outputs = await ClipperEngine.generateClips(
+    sourceInput: sourceInput,
+    onProgress: (msg) => setState(() => _statusText = msg),
+  );
 
-      final outputs = await ClipperEngine.generateClips(
-        sourceData: sourceData,
-        clipCount: _clipCount.round(),
-        clipDurationSec: _selectedDuration,
-        burnCaptions: _burnCaptions,
-        filterPreset: _selectedFilter,
-        framingMode: _selectedFraming,
-        onStatus: (msg) => setState(() => _statusText = msg),
-      );
+  setState(() {
+    _generatedFiles = outputs;
+    _statusText = 'Done! Saved ${outputs.length} clips.';
+  });
+} catch (e) {
+  setState(() {
+    _statusText = 'Error: ${e.toString()}';
+  });
+} finally {
+  setState(() => _isProcessing = false);
+}
 
-      setState(() {
-        _generatedFiles = outputs;
-        _statusText = 'Done! Saved ${outputs.length} clips to Movies/Clipper.';
-      });
-    } catch (e) {
-      setState(() {
-        _statusText = 'Error: ${e.toString().replaceAll("Exception:", "").trim()}';
-      });
-    } finally {
-      setState(() => _isProcessing = false);
-    }
-  }
+      
 
   @override
   Widget build(BuildContext context) {
